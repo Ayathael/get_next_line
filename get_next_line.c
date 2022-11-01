@@ -1,74 +1,45 @@
 
-
-
-static int    addline(char **s, char **line)/* ajouter une ligne*/
+// join and free
+char    *ft_free(char *buffer, char *buf) /* */
 {
-    int        len; /*on initie un commpteur len pour la longeur*/
-    char    *tempo;/*on initie un pointeur de chaine de charactere */
+    char    *tempo;/*on créer une chaine de character */
 
-    len = 0;/* on défini la longueur de base a 0*/
-    while ((*s)[len] != '\n' && (*s)[len] != '\0')/* on dit que ten que notre pointeur de pointeur de chaine de charatere a la valeur de len ne vaux pas un rettour a la ligne et que la chaine nes pas a la fin */
-        len++;/* alors on augmente la longeur*/
-    if ((*s)[len] == '\n')/* si on rencontre un retour a la ligne*/
-    {
-        *line = ft_strsub(*s, 0, len);/* on dit que line  */
-        tempo = ft_strdup(&((*s)[len + 1]));/* */
-        free(*s);/* on brule l'ancien *s */
-        *s = tempo;/*en remet la ligne avec back slash 0 en plus */
-        if ((*s)[0] == '\0')/* si cest une ligne vide */
-            ft_strdel(s);/* on suprime la ligne vide */
-    }
-    else/* */
-    {
-        *line = ft_strdup(*s);/* si le derneir charactere nes pas back slash n on copie la ligne */
-        ft_strdel(s);/* fin de la ligne s donc on libere s */
-    }
-    return (1);/* signifie on a pus reussir a ajouter une ligne*/
+    tempo = ft_strjoin(buffer, buf);/*on dit que notre tempo vaux une chaine qui englobe les chaines buffer et buf */
+    free(buffer);/* on liber lespace que prend buffer */
+    return (tempo);/* on retourne tempo */
+}
 
 
-blabla nya
-bloblo blihdjs
-blu
 
-*line = blabla nya
-tempo = blabla nya-0
-
-
-----
-    static int    output(char **s, char **line, int ret, int fd)
-    {
-        if (ret < 0)
-            return (-1);
-        else if (ret == 0 && s[fd] == NULL)
-            return (0);
-        else
-            return (appendline(&s[fd], line));
-    }
-    
-----
-    
-char   *get_next_line(int fd)
+char    *read_file(int fd, char *res)/* on crée une fonction qui nous permet de lire le fichier, pour ca on lui demande donc le file descriptor et ce quil faut afficher*/
 {
-        int            ret;
-        static char    *s[FD_SIZE];
-        char        buff[BUFF_SIZE + 1];
-        char        *tmp;
+    char    *buffer; /* on créer une chaine de character */
+    int        byte_read;/* on créer un int */
 
-        if (fd < 0 || line == NULL)
-            return (-1);
-        while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
+    if (!res)/* si le res n'existe pas*/
+        res = ft_calloc(1, 1); /* alors res vaux de lespace aloué pour 1case de 1 byte*/
+    
+    // malloc buffer
+    buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));/*on dit que notre chaine buffer prend la place de BUFFER SIZE +1 case, de size of char byte */
+    byte_read = 1;/* on initie notrte byte read a 1*/
+    while (byte_read > 0)/* ten que notre byte read est plus grand que 0 */
+    {
+        // while not eof read
+        byte_read = read(fd, buffer, BUFFER_SIZE);/* byte read vaux read */
+        if (byte_read == -1)/* si byte read est stricterment egale a -1 */
         {
-            buff[ret] = '\0';
-        if (s[fd] == NULL)
-            s[fd] = ft_strdup(buff);
-        else
-        {
-            tmp = ft_strjoin(s[fd], buff);
-            free(s[fd]);
-            s[fd] = tmp;
+            free(buffer);/*on libere la place attrtibuer a buffer */
+            return (NULL);/* on retourn null */
         }
-        if (ft_strchr(s[fd], '\n'))
-            break ;
+        
+        // 0 to end for leak
+        buffer[byte_read] = 0;/*on dit que la string buffer pointant a la case de valeur byte read vaux 0 */
+        // join and free
+        res = ft_free(res, buffer);/*res vaux ft free  */
+        // quit if \n find
+        if (ft_strchr(buffer, '\n'))/* si on trtouve un back slash n dans la dans chaine buffer*/
+            break ;/* alors on break */
     }
-    return (output(s, line, ret, fd));
+    free(buffer);/* on libere lespace donner a buffer*/
+    return (res);/* en retourne res */
 }
