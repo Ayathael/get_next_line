@@ -1,6 +1,7 @@
-
-#include "get_next_line.h"
-
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include "get_next_line.h"
 
 /*Va prendre la chainebuffer(une chaine deja découper en fonction de la taille de buffer_size) et la fusionner avec buff(une chaine decouper en fonciton de buffer size, venant apres la valeur de la 1e chaine , cette fusion constitue chainetemporaire, on libere la place de chainebuffer */
 char *ft_free(char *chainebuffer, char *buff)
@@ -100,7 +101,7 @@ char    *read_file(int fd, char *result)
     return (result);
 }
 
-/* foncion qui verifie qu'il n'y es pas d'erreur (de fd, de buff_syze ou de read), et  */
+/* foncion qui verifie qu'il n'y es pas d'erreur (de fd, de buff_syze ou de read), et retourn la 1e ligne, puis la garde en souvenir gracce au static pour ne pas la reafficher au second apelle */
 char    *get_next_line(int fd)
 {
     static char    *chainebuffer;
