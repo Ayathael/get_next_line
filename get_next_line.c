@@ -1,6 +1,7 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
 # include "get_next_line.h"
 
 /*Va prendre la chainebuffer(une chaine deja découper en fonction de la taille de buffer_size) et la fusionner avec buff(une chaine decouper en fonciton de buffer size, venant apres la valeur de la 1e chaine , cette fusion constitue chainetemporaire, on libere la place de chainebuffer */
@@ -116,4 +117,15 @@ char    *get_next_line(int fd)
     line = ft_line(chainebuffer);
     chainebuffer = ft_next(chainebuffer);
     return (line);
+}
+
+int        main(void)
+{
+    int fd = open("message.txt", O_RDONLY);
+    if (fd == -1)
+    {
+    printf("error with opening of file\n");
+    }
+    printf("%s",get_next_line(fd));
+    printf("%s",get_next_line(fd));
 }
