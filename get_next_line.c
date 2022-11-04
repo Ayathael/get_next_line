@@ -6,7 +6,7 @@
 /*Va prendre la chainebuffer(une chaine deja découper en fonction de la taille de buffer_size) et la fusionner avec buff(une chaine decouper en fonciton de buffer size, venant apres la valeur de la 1e chaine , cette fusion constitue chainetemporaire, on libere la place de chainebuffer */
 char *ft_free(char *chainebuffer, char *buff)
 {
-    char chainetemporaire;
+    char *chainetemporaire;
 
     chainetemporaire = ft_strjoin(chainebuffer, buff);
     free(chainebuffer);
@@ -27,7 +27,7 @@ char *ft_next(char *chainebuffer)
     }
     if(chainebuffer[x] == '\0')
     {
-        free(chaine);
+        free(chainebuffer);
         return(NULL);
     }
     str = ft_calloc((ft_strlen(chainebuffer) - x +1), sizeof(char));
@@ -50,7 +50,7 @@ char *ft_line(char *chainebuffer)
     char *str;
 
     x = 0;
-    if(chainebuffer == '\0')
+    if(chainebuffer == 0)
     {
         return(NULL);
     }
