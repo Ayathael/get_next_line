@@ -2,69 +2,69 @@
 #include "get_next_line.h"
 
 
-/*Va prendre une chaine1 et la fusionner a la chaine2 , cette fusion constitue chainetemporaire, on libere la place de chaine1 */ 
-char *ft_free(char *chaine1, char *chaine2)
+/*Va prendre la chainebuffer(une chaine deja découper en fonction de la taille de buffer_size) et la fusionner avec buff(une chaine decouper en fonciton de buffer size, venant apres la valeur de la 1e chaine , cette fusion constitue chainetemporaire, on libere la place de chainebuffer */
+char *ft_free(char *chainebuffer, char *buff)
 {
     char chainetemporaire;
 
-    chainetemporaire = ft_strjoin(chaine1, chaine2);
-    free(chaine1);
+    chainetemporaire = ft_strjoin(chainebuffer, buff);
+    free(chainebuffer);
     return(chainetemporaire);
 }
 
-/* fonction sers, lire le nb de chaine rendu a valeur de buffsize, a grader le reste, 1 on regarde si il y a un reste, et 2 on garde le reste*/
-char *ft_next(char *chaine)
+/* lis une chainebuffer (qui a pour taille la valeur donner par BUFFER_SIZE /ex: ''blabla'',si buffer size 3 > alors chaine vaut ''bla''/ vérifie si il y a encore des choses a afficher ensuite, renvoie la suites */
+char *ft_next(char *chainebuffer)
 {
     int x;
     int y;
     char *str;
 
     x = 0;
-    while(chaine[x] != '\0' && chaine[x] != '\n')
+    while(chainebuffer[x] != '\0' && chainebuffer[x] != '\n')
     {
         x++;
     }
-    if(chaine[x] == 0)
+    if(chainebuffer[x] == '\0')
     {
         free(chaine);
         return(NULL);
     }
-    str = ft_calloc((ft_strlen(chaine) - x +1), sizeof(char));
+    str = ft_calloc((ft_strlen(chainebuffer) - x +1), sizeof(char));
     x++;
     y = 0;
-    while(chaine[x])
+    while(chainebuffer[x] != '\0')
     {
-        str[y] = chaine[x];
+        str[y] = chainebuffer[x];
         x++;
         y++;
     }
-    free(chaine);
+    free(chainebuffer);
     return(str);
 }
 
-/*regarde la chaine et copie cest valeur dans str, puis renvoie str. En suivant les \n */
-char *ft_line(char *chaine)
+/*lis la chainebuffer, verifie si elle possède un \n et quil faut mettre un retour a la ligne, ou si il reste des caractere sur la meme ligne.(dans ce cas on renvoie juste notre chainebuffer et on passe a la suite de la ligne)*/
+char *ft_line(char *chainebuffer)
 {
     int x;
     char *str;
 
     x = 0;
-    if(chaine == 0)
+    if(chainebuffer == '\0')
     {
         return(NULL);
     }
-    while(chaine[x] != '\0' && chaine[x] != '\n')
+    while(chainebuffer[x] != '\0' && chainebuffer[x] != '\n')
     {
         x++;
     }
     str = ft_calloc(x +2, sizeof(char));
     x = 0;
-    while(chaine[x] != '\0' && chaine[x] != '\n')
+    while(chainebuffer[x] != '\0' && chainebuffer[x] != '\n')
     {
-        str[x] = chaine[x];
+        str[x] = chainebuffer[x];
         x++;
     }
-    if(chaine[x] != '\0' && chaine[x] == '\n')
+    if(chainebuffer[x] != '\0' && chainebuffer[x] == '\n')
     {
         str[x] = '\n';
         x++;
@@ -73,9 +73,46 @@ char *ft_line(char *chaine)
 
 }
 
-char *readfile(int fd, char *res)
+/* cette fonction sers a vérifier si on peut lire le fichier et renvoyer la premiere ligne trouver avant un \n */
+char    *read_file(int fd, char *result)
 {
-    char *str;
-    int byte_read;
-    if(!res)
+    char    *chainebuffer;
+    int        isfonctionreadok;
+
+    if (!result)
+        result = ft_calloc(1, 1);
+    chainebuffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+    isfonctionreadok = 1;
+    while (isfonctionreadok > 0)
+    {
+        isfonctionreadok = read(fd, chainebuffer, BUFFER_SIZE);
+        if (isfonctionreadok == -1) /* si le read na pas marché */
+        {
+            free(chainebuffer);
+            return (NULL);
+        }
+        chainebuffer[isfonctionreadok] = 0;
+        result = ft_free(result, chainebuffer);
+        if (ft_strchr(chainebuffer, '\n'))
+            break ;
+    }
+    free(chainebuffer);
+    return (result);
+}
+
+/* foncion qui verifie qu'il n'y es pas d'erreur (de fd, de buff_syze ou de read), et  */
+char    *get_next_line(int fd)
+{
+    static char    *chainebuffer;
+    char        *line;
+
+    // error handling
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+        return (NULL);
+    chainebuffer = read_file(fd, chainebuffer);
+    if (!chainebuffer)
+        return (NULL);
+    line = ft_line(chainebuffer);
+    chainebuffer = ft_next(chainebuffer);
+    return (line);
 }
