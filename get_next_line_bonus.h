@@ -6,12 +6,12 @@
 /*   By: sroger <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 10:29:48 by sroger            #+#    #+#             */
-/*   Updated: 2022/11/07 10:42:35 by sroger           ###   ########.fr       */
+/*   Updated: 2022/11/07 13:25:20 by sroger           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_BONUS_H
+# define GET_NEXT_LINE_BONUS_H
 
 # include <string.h>
 # include <stdio.h>
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <sys/types.h>
 # include <sys/uio.h>
+# include <limits.h>
 
 typedef struct s_list
 {

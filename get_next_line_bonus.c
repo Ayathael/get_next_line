@@ -6,17 +6,15 @@
 /*   By: sroger <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 10:06:01 by sroger            #+#    #+#             */
-/*   Updated: 2022/11/07 11:37:37 by sroger           ###   ########.fr       */
+/*   Updated: 2022/11/07 13:16:50 by sroger           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
-/*Va prendre la chainebuffer(une chaine deja découper en fonction de la taille de buffer_size) et la fusionner avec buff(une chaine decouper en fonciton de buffer size, venant apres la valeur de la 1e chaine , cette fusion constitue chainetemporaire, on libere la place de chainebuffer */
 char	*ft_free(char *chainebuffer, char *buff)
 {
 	char	*chainetemporaire;
@@ -26,7 +24,6 @@ char	*ft_free(char *chainebuffer, char *buff)
 	return (chainetemporaire);
 }
 
-/* lis une chainebuffer (qui a pour taille la valeur donner par BUFFER_SIZE /ex: ''blabla'',si buffer size 3 > alors chaine vaut ''bla''/ vérifie si il y a encore des choses a afficher ensuite, renvoie la suites */
 char	*ft_next(char *chainebuffer)
 {
 	int		x;
@@ -56,7 +53,6 @@ char	*ft_next(char *chainebuffer)
 	return (str);
 }
 
-/*lis la chainebuffer, verifie si elle possède un \n et quil faut mettre un retour a la ligne, ou si il reste des caractere sur la meme ligne.(dans ce cas on renvoie juste notre chainebuffer et on passe a la suite de la ligne)*/
 char	*ft_line(char *chainebuffer)
 {
 	int		x;
@@ -86,7 +82,6 @@ char	*ft_line(char *chainebuffer)
 	return (str);
 }
 
-/* cette fonction sers a vérifier si on peut lire le fichier et renvoyer la premiere ligne trouver avant un \n */
 char	*read_file(int fd, char *result)
 {
 	char	*chainebuffer;
@@ -115,30 +110,27 @@ char	*read_file(int fd, char *result)
 	return (result);
 }
 
-/* foncion qui verifie qu'il n'y es pas d'erreur (de fd, de buff_syze ou de read), et retourn la 1e ligne, puis la garde en souvenir gracce au static pour ne pas la reafficher au second apelle */
 char	*get_next_line(int fd)
 {
-	static char	*chainebuffer;
+	static char	*chainebuffer[OPEN_MAX];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free (chainebuffer);
-		chainebuffer = 0;
 		return (NULL);
 	}
-	chainebuffer = read_file(fd, chainebuffer);
-	if (!chainebuffer)
+	chainebuffer[fd] = read_file(fd, chainebuffer[fd]);
+	if (!chainebuffer[fd])
 		return (NULL);
-	line = ft_line(chainebuffer);
-	chainebuffer = ft_next(chainebuffer);
+	line = ft_line(chainebuffer[fd]);
+	chainebuffer[fd] = ft_next(chainebuffer[fd]);
 	return (line);
 }
 /*
-int	main(void)
+int    main(void)
 {
-	int fd = open("message.txt", O_RDONLY);
-	if (fd == -1)
+    int fd = open("message.txt", O_RDONLY);
+    if (fd == -1)
     {
     printf("error with opening of file\n");
     }

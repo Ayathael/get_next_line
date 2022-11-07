@@ -6,14 +6,14 @@
 /*   By: sroger <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 09:48:16 by sroger            #+#    #+#             */
-/*   Updated: 2022/11/07 12:58:57 by sroger           ###   ########.fr       */
+/*   Updated: 2022/11/07 13:23:09 by sroger           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 void	ft_bzero(void *ptr, size_t len)
 {
@@ -32,12 +32,12 @@ void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*str;
 
-	str = malloc(nmemb * size);
-	if (str == 0)
+	str = malloc(size * nmemb);
+	if (!str)
 	{
-		return (str);
+		return (NULL);
 	}
-	ft_bzero (str, (nmemb * size));
+	ft_bzero (str, (size * nmemb));
 	return (str);
 }
 
