@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sroger <marvin@42lausanne.ch>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/07 10:06:01 by sroger            #+#    #+#             */
-/*   Updated: 2022/11/07 13:16:50 by sroger           ###   ########.fr       */
+/*   Updated: 2022/11/08 15:36:18 by sarah.roger      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*ft_line(char *chainebuffer)
 	x = 0;
 	if (!chainebuffer[x])
 		return (NULL);
-	while (chainebuffer[x] != '\0' && chainebuffer[x] != '\n')
+	while (chainebuffer[x] && chainebuffer[x] != '\n')
 	{
 		x++;
 	}
@@ -69,7 +69,7 @@ char	*ft_line(char *chainebuffer)
 	if (!str)
 		return (NULL);
 	x = 0;
-	while (chainebuffer[x] != '\0' && chainebuffer[x] != '\n')
+	while (chainebuffer[x] && chainebuffer[x] != '\n')
 	{
 		str[x] = chainebuffer[x];
 		x++;
@@ -117,6 +117,8 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
+		free(chainebuffer[fd]);
+		chainebuffer[fd] = 0;
 		return (NULL);
 	}
 	chainebuffer[fd] = read_file(fd, chainebuffer[fd]);
